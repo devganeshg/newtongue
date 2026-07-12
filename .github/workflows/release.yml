@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v8
+      - uses: astral-sh/setup-uv@v8.3.2
       - run: uv sync
       - run: uv run voxdub --help
       - run: uv run python -c "from video_translator.media import ensure_ffmpeg, _ffmpeg; ensure_ffmpeg(); print(_ffmpeg())"
