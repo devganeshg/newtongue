@@ -7,7 +7,42 @@
 <p align="center"><b>Dub any video into another language</b> — natural neural voices, no API keys.<br>
 Windows · macOS · Linux</p>
 
-The pipeline:
+Give VoxDub a video and a target language; it returns the same video with the speech
+replaced by a natural-sounding translated voice — plus optional subtitles.
+
+## ✨ Features
+
+- **🎬 One-click dubbing** — upload a video, pick a language, press *Dub it*. VoxDub
+  transcribes the speech, translates it, synthesizes a new voice, and rebuilds the video.
+- **🗣️ 15 languages, hundreds of voices** — English, Hindi, Spanish, French, German,
+  Italian, Portuguese, Japanese, Korean, Chinese (Simplified & Taiwan), Thai, Vietnamese,
+  Gulf Arabic, and Russian, each with a curated default Microsoft neural voice. Any
+  edge-tts voice can be substituted (`voxdub --list-voices hi`).
+- **🔍 Automatic source-language detection** — no need to say what language the video is
+  in; Whisper figures it out (or force it with `--from`).
+- **🧠 Local, private transcription** — speech-to-text runs entirely on your machine with
+  [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (CPU, int8). Your video is
+  never uploaded anywhere; only the transcribed *text* goes to the translation service.
+- **🆓 No API keys, no accounts** — translation (Google Translate) and voices
+  (Microsoft Edge neural TTS) use free public endpoints.
+- **⏱️ Time-synced dubbing** — every translated clip starts exactly where the original
+  sentence started. Clips that run long are sped up pitch-preserved (capped at 1.35×),
+  so the dub never drifts out of sync.
+- **🎵 Background-audio mode** — optionally keep the original soundtrack quietly
+  underneath the dub, preserving music and ambience.
+- **📝 Translated subtitles** — get a matching `.srt` file alongside the dubbed video.
+- **🎚️ Adjustable accuracy** — five Whisper model sizes, from `tiny` (fast drafts) to
+  `large-v3` (best transcription).
+- **🛡️ Voice fallback** — if the free TTS endpoint rejects a specific text+voice combo,
+  VoxDub automatically retries with other voices of the same locale and tells you.
+- **🔇 Lossless video** — the video stream is copied untouched (no re-encode, no quality
+  loss); only the audio track is replaced.
+- **🖥️ Web UI and CLI** — a friendly browser app for everyday use, a `voxdub` command
+  for scripting and batch work.
+- **📦 Zero-setup launchers** — double-click starters for Windows, macOS, and Linux that
+  install Python, all dependencies, and even ffmpeg automatically on first run.
+
+## How it works
 
 ```
 video ─ ffmpeg → audio ─ Whisper (local) → timed transcript ─ Google Translate (free)
@@ -16,8 +51,7 @@ video ─ ffmpeg → audio ─ Whisper (local) → timed transcript ─ Google T
 ```
 
 Inspired by [ruslanmv/Video-Translator](https://github.com/ruslanmv/Video-Translator), upgraded with
-local Whisper transcription, natural neural voices, and time-synced dubbing (each translated clip
-starts where the original speech started; overruns are sped up pitch-preserved, capped at 1.35×).
+local Whisper transcription, natural neural voices, and time-synced dubbing.
 
 Transcription runs fully offline. Translation and voice synthesis use free online services
 (no API keys), so an internet connection is needed while converting.

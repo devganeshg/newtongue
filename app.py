@@ -90,7 +90,7 @@ def run(video, source_lang, target_lang, voice, model_size, keep_bg, want_srt,
             Options(
                 target_lang=target_lang,
                 source_lang=None if source_lang == "auto" else source_lang,
-                voice=voice.strip() or None,
+                voice=(voice or "").strip() or None,
                 model_size=model_size,
                 keep_background=keep_bg,
                 write_srt=want_srt,
@@ -153,4 +153,5 @@ if __name__ == "__main__":
         theme=THEME,
         css=CSS,
         favicon_path=str(ASSETS / "logo.svg"),
+        show_error=True,
     )
