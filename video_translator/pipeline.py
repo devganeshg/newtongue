@@ -79,7 +79,7 @@ def translate_video(input_path: Path, opts: Options,
 
         report(0.87, "Assembling dubbed audio track")
         dub_wav = work / "dub.wav"
-        timeline.assemble(segments, clips, duration, dub_wav, work)
+        warnings += timeline.assemble(segments, clips, duration, dub_wav, work)
 
         report(0.93, "Muxing final video")
         media.mux(input_path, dub_wav, output, opts.keep_background)

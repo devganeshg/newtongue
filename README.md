@@ -25,11 +25,15 @@ replaced by a natural-sounding translated voice — plus optional subtitles.
   never uploaded anywhere; only the transcribed *text* goes to the translation service.
 - **🆓 No API keys, no accounts** — translation (Google Translate) and voices
   (Microsoft Edge neural TTS) use free public endpoints.
-- **⏱️ Time-synced dubbing** — every translated clip starts exactly where the original
-  sentence started. Clips that run long are sped up pitch-preserved (capped at 1.35×),
-  so the dub never drifts out of sync.
-- **🎵 Background-audio mode** — optionally keep the original soundtrack quietly
-  underneath the dub, preserving music and ambience.
+- **⏱️ Time-synced dubbing, no overlapping voices** — every translated clip starts
+  exactly where the original sentence started, and clips are guaranteed never to talk
+  over each other: long translations are sped up pitch-preserved (gently up to 1.35×,
+  harder up to 1.8× when needed) and, in extreme cases, faded out at the segment
+  boundary — with a warning telling you which segment was affected.
+- **🎵 Smart background-audio mode** — optionally keep the original soundtrack under
+  the dub. The original is automatically ducked while the dubbed voice speaks
+  (sidechain compression) and comes back up between sentences, so music and ambience
+  survive without two voices fighting.
 - **📝 Translated subtitles** — get a matching `.srt` file alongside the dubbed video.
 - **🎚️ Adjustable accuracy** — five Whisper model sizes, from `tiny` (fast drafts) to
   `large-v3` (best transcription).
@@ -124,7 +128,8 @@ its Google Translate code and default voice).
   a segment is left silent only if every voice fails.
 - Whisper model sizes: `tiny`/`base` (fast, rough), `small` (default), `medium`/`large-v3`
   (best accuracy, slower). All run on CPU with int8 quantization.
-- `--keep-bg` mixes the original audio at 15% volume under the dub — good for videos
-  with music, but the original speech stays faintly audible.
+- `--keep-bg` keeps the original audio under the dub, ducked while the dubbed voice
+  speaks — good for videos with music. Between sentences the original (including its
+  speech) comes back up.
 - Translation quality is Google Translate quality; dubbing timing is synced to segment
   starts, not lip movements.

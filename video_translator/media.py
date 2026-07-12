@@ -66,18 +66,21 @@ def get_duration(media: Path) -> float:
 
 
 def mux(video: Path, dub_audio: Path, output: Path, keep_background: bool = False,
-        background_volume: float = 0.15) -> None:
+        background_volume: float = 0.4) -> None:
     """Write `output` with the original video stream (copied) and the dubbed audio.
 
-    With keep_background the original audio stays underneath at reduced volume,
-    preserving music/ambience.
+    With keep_background the original audio stays underneath, ducked while the
+    dub speaks (sidechain compression) so the two voices don't fight; music and
+    ambience come back up between sentences.
     """
     cmd = [_ffmpeg(), "-y", "-i", str(video), "-i", str(dub_audio)]
     if keep_background:
         cmd += [
             "-filter_complex",
-            f"[0:a]volume={background_volume}[bg];"
-            "[bg][1:a]amix=inputs=2:duration=longest:dropout_transition=0:normalize=0[a]",
+            "[1:a]asplit=2[sc][dub];"
+            f"[0:a]volume={background_volume}[bgv];"
+            "[bgv][sc]sidechaincompress=threshold=0.03:ratio=12:attack=20:release=400[bg];"
+            "[bg][dub]amix=inputs=2:duration=longest:dropout_transition=0:normalize=0[a]",
             "-map", "0:v", "-map", "[a]",
         ]
     else:
