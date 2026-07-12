@@ -25,7 +25,7 @@ jobs:
         run: uv run python -c "import video_translator.pipeline, app"
 
       - name: CLI runs
-        run: uv run videotranslate --help
+        run: uv run voxdub --help
 
       - name: ffmpeg auto-download works
         run: uv run python -c "from video_translator.media import ensure_ffmpeg, _ffmpeg; ensure_ffmpeg(); print(_ffmpeg())"

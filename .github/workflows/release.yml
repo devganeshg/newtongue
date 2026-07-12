@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
       - run: uv sync
-      - run: uv run videotranslate --help
+      - run: uv run voxdub --help
       - run: uv run python -c "from video_translator.media import ensure_ffmpeg, _ffmpeg; ensure_ffmpeg(); print(_ffmpeg())"
 
   release:
@@ -29,18 +29,18 @@ jobs:
 
       - name: Build download zip (all platforms, launchers included)
         run: |
-          git archive --format=zip --prefix="Video-Translator/" \
-            -o "Video-Translator-${GITHUB_REF_NAME}.zip" HEAD
+          git archive --format=zip --prefix="VoxDub/" \
+            -o "VoxDub-${GITHUB_REF_NAME}.zip" HEAD
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: Video-Translator-*.zip
+          files: VoxDub-*.zip
           generate_release_notes: true
           body: |
             Download the zip, unpack it, then:
-            - **Windows:** double-click `Start Video Translator.bat`
-            - **macOS:** right-click `Start Video Translator.command` → Open (first time only)
-            - **Linux:** run `./start-video-translator.sh`
+            - **Windows:** double-click `Start VoxDub.bat`
+            - **macOS:** right-click `Start VoxDub.command` → Open (first time only)
+            - **Linux:** run `./start-voxdub.sh`
 
             First launch installs everything automatically (needs internet); after that it starts in seconds.

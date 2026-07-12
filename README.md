@@ -1,6 +1,13 @@
-# Video Voice Translator
+<p align="center">
+  <img src="assets/logo.svg" width="96" alt="VoxDub logo">
+</p>
 
-Translate a video's voice into another language — on Windows, macOS, or Linux. The pipeline:
+<h1 align="center">VoxDub</h1>
+
+<p align="center"><b>Dub any video into another language</b> — natural neural voices, no API keys.<br>
+Windows · macOS · Linux</p>
+
+The pipeline:
 
 ```
 video ─ ffmpeg → audio ─ Whisper (local) → timed transcript ─ Google Translate (free)
@@ -21,9 +28,9 @@ Download the latest zip from the [Releases page](../../releases), unpack it, the
 
 | OS | Do this |
 |---|---|
-| **Windows** | Double-click `Start Video Translator.bat` |
-| **macOS** | Right-click `Start Video Translator.command` → **Open** (only needed the first time; after that, double-click) |
-| **Linux** | `./start-video-translator.sh` |
+| **Windows** | Double-click `Start VoxDub.bat` |
+| **macOS** | Right-click `Start VoxDub.command` → **Open** (only needed the first time; after that, double-click) |
+| **Linux** | `./start-voxdub.sh` |
 
 The first launch installs everything automatically — Python (via [uv](https://docs.astral.sh/uv/)),
 all dependencies, and a static ffmpeg build if your system doesn't have one — then opens the app
@@ -45,12 +52,14 @@ build is downloaded automatically on first use.
 ### Command line
 
 ```bash
-uv run videotranslate input.mp4 --to hi --srt          # dub to Hindi + subtitles
-uv run videotranslate input.mp4 --to es --keep-bg      # keep music/ambience underneath
-uv run videotranslate input.mp4 --to ja --model medium # better transcription, slower
-uv run videotranslate --list-voices th                 # see voices for a language
-uv run videotranslate input.mp4 --to zh-TW --voice zh-TW-YunJheNeural
+uv run voxdub input.mp4 --to hi --srt          # dub to Hindi + subtitles
+uv run voxdub input.mp4 --to es --keep-bg      # keep music/ambience underneath
+uv run voxdub input.mp4 --to ja --model medium # better transcription, slower
+uv run voxdub --list-voices th                 # see voices for a language
+uv run voxdub input.mp4 --to zh-TW --voice zh-TW-YunJheNeural
 ```
+
+(`videotranslate` still works as an alias.)
 
 Output defaults to `input_<lang>.mp4` next to the input. Source language is auto-detected
 (`--from en` to force it).

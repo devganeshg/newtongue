@@ -1594,7 +1594,7 @@ wheels = [
 ]
 
 [[package]]
-name = "video-translator"
+name = "voxdub"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

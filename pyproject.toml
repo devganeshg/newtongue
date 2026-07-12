@@ -1,7 +1,7 @@
 [project]
-name = "video-translator"
+name = "voxdub"
 version = "0.1.0"
-description = "Translate a video's voice into another language: local Whisper STT + free neural TTS"
+description = "VoxDub — dub any video into another language: local Whisper STT + free neural TTS"
 requires-python = ">=3.11,<3.13"
 dependencies = [
     "faster-whisper>=1.0",
@@ -13,6 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
+voxdub = "video_translator.cli:main"
 videotranslate = "video_translator.cli:main"
 
 [build-system]

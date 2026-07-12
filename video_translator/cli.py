@@ -1,4 +1,4 @@
-"""Command-line interface: videotranslate input.mp4 --to hi"""
+"""Command-line interface: voxdub input.mp4 --to hi"""
 
 import argparse
 import sys
@@ -14,8 +14,8 @@ from .voices import LANGUAGES
 def main(argv: list[str] | None = None) -> int:
     lang_help = ", ".join(f"{code} ({lang.name})" for code, lang in sorted(LANGUAGES.items()))
     parser = argparse.ArgumentParser(
-        prog="videotranslate",
-        description="Translate a video's voice into another language.",
+        prog="voxdub",
+        description="VoxDub: dub a video's voice into another language.",
         epilog=f"Languages: {lang_help}",
     )
     parser.add_argument("input", nargs="?", help="input video file")

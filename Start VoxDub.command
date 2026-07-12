@@ -1,10 +1,9 @@
 #!/bin/bash
-# Linux launcher: run to set up (first run) and open Video Voice Translator.
-#   chmod +x start-video-translator.sh && ./start-video-translator.sh
+# macOS launcher: double-click to set up (first run) and open VoxDub.
 set -e
 cd "$(dirname "$0")"
 
-echo "=== Video Voice Translator ==="
+echo "=== VoxDub ==="
 
 # 1. Ensure uv (Python package manager) is installed
 export PATH="$HOME/.local/bin:$PATH"
@@ -19,5 +18,5 @@ echo "Checking dependencies..."
 uv sync
 
 # 3. Launch the app; it opens in your browser automatically
-echo "Starting... the app will open in your browser. Keep this terminal open."
+echo "Starting... the app will open in your browser. Keep this window open."
 exec uv run python app.py

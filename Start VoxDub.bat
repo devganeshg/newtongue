@@ -1,9 +1,9 @@
 @echo off
-rem Windows launcher: double-click to set up (first run) and open Video Voice Translator.
+rem Windows launcher: double-click to set up (first run) and open VoxDub.
 setlocal
 cd /d "%~dp0"
 
-echo === Video Voice Translator ===
+echo === VoxDub ===
 
 rem 1. Ensure uv (Python package manager) is installed
 set "PATH=%USERPROFILE%\.local\bin;%PATH%"
