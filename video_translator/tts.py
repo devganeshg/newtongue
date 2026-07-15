@@ -18,10 +18,13 @@ _CONCURRENCY = 4
 _RETRIES = 2
 
 
-async def _try_voice(text: str, voice: str, out_path: Path) -> bool:
+async def _try_voice(text: str, voice: str, out_path: Path,
+                     rate: str = "+0%", pitch: str = "+0Hz", volume: str = "+0%") -> bool:
     for attempt in range(_RETRIES):
         try:
-            await edge_tts.Communicate(text, voice).save(str(out_path))
+            await edge_tts.Communicate(
+                text, voice, rate=rate, pitch=pitch, volume=volume
+            ).save(str(out_path))
             return True
         except NoAudioReceived:
             return False  # deterministic for this text+voice; retrying won't help
@@ -40,11 +43,14 @@ async def _locale_voices(voice: str) -> list[str]:
 
 
 def synthesize_segments(segments: list[Segment], voice: str, out_dir: Path,
-                        on_progress=None) -> tuple[list[Path | None], list[str]]:
+                        on_progress=None, rate: str = "+0%", pitch: str = "+0Hz",
+                        volume: str = "+0%") -> tuple[list[Path | None], list[str]]:
     """Synthesize each translated segment to an MP3.
 
-    Returns (paths, warnings); a path is None when synthesis failed for that
-    segment even after voice fallbacks (the segment stays silent in the dub).
+    `rate`/`pitch`/`volume` are edge-tts SSML-style adjustments, e.g. "+15%",
+    "-5Hz", "+0%". Returns (paths, warnings); a path is None when synthesis
+    failed for that segment even after voice fallbacks (the segment stays
+    silent in the dub).
     """
     out_dir.mkdir(parents=True, exist_ok=True)
     paths: list[Path | None] = [out_dir / f"seg_{i:04d}.mp3" for i in range(len(segments))]
@@ -53,10 +59,10 @@ def synthesize_segments(segments: list[Segment], voice: str, out_dir: Path,
     async def synth(sem: asyncio.Semaphore, i: int, fallbacks: list[str]) -> None:
         async with sem:
             text, path = segments[i].translated, paths[i]
-            if await _try_voice(text, voice, path):
+            if await _try_voice(text, voice, path, rate, pitch, volume):
                 return
             for alt in fallbacks:
-                if await _try_voice(text, alt, path):
+                if await _try_voice(text, alt, path, rate, pitch, volume):
                     warnings.append(
                         f"segment {i + 1} ({segments[i].start:.1f}s): voice {voice} "
                         f"produced no audio; used {alt} instead"

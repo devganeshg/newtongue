@@ -92,3 +92,57 @@ def mux(video: Path, dub_audio: Path, output: Path, keep_background: bool = Fals
 def change_tempo(audio_in: Path, audio_out: Path, tempo: float) -> None:
     """Speed up (or slow down) audio without changing pitch."""
     _run([_ffmpeg(), "-y", "-i", str(audio_in), "-filter:a", f"atempo={tempo:.4f}", str(audio_out)])
+
+
+def _filter_available(ffmpeg_path: str, name: str) -> bool:
+    result = subprocess.run([ffmpeg_path, "-hide_banner", "-h", f"filter={name}"],
+                            capture_output=True, text=True)
+    return "Unknown filter" not in result.stdout + result.stderr
+
+
+def _ffmpeg_with_subtitles_filter() -> str:
+    """Resolve an ffmpeg binary that has the 'subtitles' filter (needs libass).
+
+    Many distro/Homebrew ffmpeg builds omit libass. If the one already on PATH
+    lacks it, fall back to the static-ffmpeg build VoxDub can auto-download,
+    which is built with libass.
+    """
+    ffmpeg = _ffmpeg()
+    if _filter_available(ffmpeg, "subtitles"):
+        return ffmpeg
+    try:
+        import static_ffmpeg
+
+        fallback, _ = static_ffmpeg.run.get_or_fetch_platform_executables_else_raise()
+    except Exception:
+        fallback = None
+    if fallback and _filter_available(fallback, "subtitles"):
+        return fallback
+    raise RuntimeError(
+        "Burning in subtitles needs an ffmpeg build with libass (the 'subtitles' filter), "
+        "and none was found. Install one, e.g. `brew install ffmpeg` on macOS or "
+        "`apt install ffmpeg` on most Linux distros, or turn off \"Burn subtitles\" — the "
+        "separate subtitle files still work fine in any video player."
+    )
+
+
+def burn_subtitles(video: Path, subtitle_path: Path, output: Path) -> None:
+    """Hard-code subtitles into the video frame (re-encodes the video stream).
+
+    ffmpeg's subtitles filter needs a path with no characters that would break
+    its internal escaping; the safest fix is to run with the subtitle file's
+    own directory as cwd and pass just the filename.
+    """
+    ffmpeg = _ffmpeg_with_subtitles_filter()
+    escaped = subtitle_path.name.replace("\\", "\\\\").replace("'", r"\'").replace(":", r"\:")
+    # cwd is overridden below so the subtitle filter can reference the file by bare name
+    # (its path may contain ffmpeg-filtergraph-special characters); video/output must
+    # therefore be absolute so they don't get resolved against that overridden cwd.
+    cmd = [
+        ffmpeg, "-y", "-i", str(Path(video).resolve()),
+        "-vf", f"subtitles=filename='{escaped}'",
+        "-c:a", "copy", str(Path(output).resolve()),
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, cwd=subtitle_path.parent)
+    if result.returncode != 0:
+        raise RuntimeError(f"ffmpeg failed:\n{result.stderr[-2000:]}")

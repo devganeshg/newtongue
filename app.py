@@ -8,12 +8,14 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pydub")
 
 import gradio as gr
 
-from video_translator.pipeline import Options, translate_video
+from video_translator.pipeline import Options, translate_video, translate_video_batch
+from video_translator.subtitles import FORMATS as SUBTITLE_FORMATS
 from video_translator.voices import LANGUAGES
 
 LANG_CHOICES = [(f"{lang.name} ({code})", code) for code, lang in LANGUAGES.items()]
 SOURCE_CHOICES = [("Auto-detect", "auto")] + LANG_CHOICES
 MODEL_CHOICES = ["tiny", "base", "small", "medium", "large-v3"]
+SUBTITLE_CHOICES = [(fmt.upper(), fmt) for fmt in SUBTITLE_FORMATS]
 
 ASSETS = Path(__file__).parent / "assets"
 
@@ -76,42 +78,65 @@ THEME = gr.themes.Soft(
 )
 
 
-def run(video, source_lang, target_lang, voice, model_size, keep_bg, want_srt,
-        progress=gr.Progress()):
+def _pct(delta: float) -> str:
+    """Slider value in [-50, 50] -> edge-tts percent delta string, e.g. '+15%'."""
+    return f"{delta:+.0f}%"
+
+
+def _hz(delta: float) -> str:
+    """Slider value in [-50, 50] -> edge-tts Hz delta string, e.g. '+20Hz'."""
+    return f"{delta:+.0f}Hz"
+
+
+def run(video, source_lang, target_langs, voice, model_size, keep_bg, subtitle_formats,
+        burn_subs, rate, pitch, volume, progress=gr.Progress()):
     if video is None:
         raise gr.Error("Please upload a video first.")
+    if not target_langs:
+        raise gr.Error("Pick at least one target language.")
 
     def report(fraction, message):
         progress(fraction, desc=message)
 
+    opts = Options(
+        target_lang=target_langs[0],
+        source_lang=None if source_lang == "auto" else source_lang,
+        voice=(voice or "").strip() or None,
+        model_size=model_size,
+        keep_background=keep_bg,
+        subtitle_formats=tuple(subtitle_formats or ()),
+        burn_subtitles=burn_subs,
+        speech_rate=_pct(rate),
+        speech_pitch=_hz(pitch),
+        speech_volume=_pct(volume),
+    )
+
     try:
-        result = translate_video(
-            Path(video),
-            Options(
-                target_lang=target_lang,
-                source_lang=None if source_lang == "auto" else source_lang,
-                voice=(voice or "").strip() or None,
-                model_size=model_size,
-                keep_background=keep_bg,
-                write_srt=want_srt,
-            ),
-            progress=report,
-        )
+        if len(target_langs) > 1:
+            results = translate_video_batch(Path(video), target_langs, opts, progress=report)
+        else:
+            results = [translate_video(Path(video), opts, progress=report)]
     except (ValueError, RuntimeError) as exc:
         raise gr.Error(str(exc))
 
-    transcript = "\n".join(
-        f"[{seg.start:7.2f}s] {seg.text}\n          → {seg.translated}"
-        for seg in result.segments
-    )
-    files = [str(result.video)] + ([str(result.srt)] if result.srt else [])
-    info_md = (
-        f"Source language detected: **{result.source_lang}** · "
-        f"{len(result.segments)} speech segments"
-    )
-    if result.warnings:
-        info_md += "\n\n⚠️ " + "\n\n⚠️ ".join(result.warnings)
-    return str(result.video), files, info_md, transcript
+    files = []
+    info_lines = [f"Source language detected: **{results[0].source_lang}**"]
+    transcript_parts = []
+    for result in results:
+        files.append(str(result.video))
+        files += [str(p) for p in result.subtitles.values()]
+        info_lines.append(
+            f"- **{result.target_lang}**: {len(result.segments)} speech segments"
+            + ("".join(f"\n  - ⚠️ {w}" for w in result.warnings) if result.warnings else "")
+        )
+        transcript_parts.append(
+            f"=== {result.target_lang} ===\n" + "\n".join(
+                f"[{seg.start:7.2f}s] {seg.text}\n          → {seg.translated}"
+                for seg in result.segments
+            )
+        )
+
+    return str(results[0].video), files, "\n".join(info_lines), "\n\n".join(transcript_parts)
 
 
 with gr.Blocks(title="VoxDub — dub videos into any language") as demo:
@@ -119,13 +144,16 @@ with gr.Blocks(title="VoxDub — dub videos into any language") as demo:
     with gr.Row():
         with gr.Column():
             video_in = gr.Video(label="1 · Upload your video")
-            with gr.Row():
-                source = gr.Dropdown(SOURCE_CHOICES, value="auto", label="From")
-                target = gr.Dropdown(LANG_CHOICES, value="hi", label="2 · Dub into")
+            source = gr.Dropdown(SOURCE_CHOICES, value="auto", label="From")
+            target = gr.Dropdown(
+                LANG_CHOICES, value=["hi"], multiselect=True,
+                label="2 · Dub into (pick one or more)",
+            )
             with gr.Accordion("Advanced options", open=False):
                 voice = gr.Textbox(
                     label="Voice",
-                    placeholder="Leave empty for the default voice, e.g. hi-IN-MadhurNeural",
+                    placeholder="Leave empty for the default voice, e.g. hi-IN-MadhurNeural "
+                                "(applies to all selected languages)",
                 )
                 model = gr.Dropdown(
                     MODEL_CHOICES, value="small", label="Whisper model",
@@ -133,19 +161,34 @@ with gr.Blocks(title="VoxDub — dub videos into any language") as demo:
                 )
                 keep_bg = gr.Checkbox(
                     label="Keep original audio as quiet background (music/ambience)")
-                want_srt = gr.Checkbox(label="Also generate translated subtitles (.srt)")
+                subtitle_formats = gr.CheckboxGroup(
+                    SUBTITLE_CHOICES, label="Generate subtitle files",
+                    info="SRT/VTT for players, ASS for styled subs, TXT for plain text")
+                burn_subs = gr.Checkbox(
+                    label="Burn subtitles into the video (hardcoded, re-encodes video)")
+                with gr.Row():
+                    rate = gr.Slider(-50, 50, value=0, step=1, label="Speech speed",
+                                     info="% faster/slower")
+                    pitch = gr.Slider(-50, 50, value=0, step=1, label="Speech pitch",
+                                      info="Hz up/down")
+                    volume = gr.Slider(-50, 50, value=0, step=1, label="Speech volume",
+                                       info="% louder/quieter")
             btn = gr.Button("3 · Dub it ✨", variant="primary", size="lg",
                             elem_id="vox-translate")
         with gr.Column():
-            video_out = gr.Video(label="Dubbed video")
-            downloads = gr.File(label="Downloads", file_count="multiple")
+            video_out = gr.Video(label="Dubbed video (first language)")
+            downloads = gr.File(label="Downloads (all videos & subtitles)", file_count="multiple")
             info = gr.Markdown()
             with gr.Accordion("Transcript & translation", open=False):
                 transcript = gr.Textbox(show_label=False, lines=14)
     gr.HTML(FOOTER_HTML)
 
-    btn.click(run, [video_in, source, target, voice, model, keep_bg, want_srt],
-              [video_out, downloads, info, transcript])
+    btn.click(
+        run,
+        [video_in, source, target, voice, model, keep_bg, subtitle_formats,
+         burn_subs, rate, pitch, volume],
+        [video_out, downloads, info, transcript],
+    )
 
 if __name__ == "__main__":
     demo.launch(
