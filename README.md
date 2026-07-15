@@ -7,6 +7,13 @@
 <p align="center"><b>Dub any video into another language</b> — natural neural voices, no API keys.<br>
 Windows · macOS · Linux</p>
 
+<p align="center">
+  <a href="https://github.com/devganeshg/voxdub/actions/workflows/ci.yml"><img src="https://github.com/devganeshg/voxdub/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license"></a>
+  <a href="https://github.com/devganeshg/voxdub/releases"><img src="https://img.shields.io/github/v/release/devganeshg/voxdub?include_prereleases" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/python-3.11%20%7C%203.12-blue" alt="Python 3.11 | 3.12">
+</p>
+
 Give VoxDub a video and a target language; it returns the same video with the speech
 replaced by a natural-sounding translated voice — plus optional subtitles.
 
@@ -34,7 +41,15 @@ replaced by a natural-sounding translated voice — plus optional subtitles.
   the dub. The original is automatically ducked while the dubbed voice speaks
   (sidechain compression) and comes back up between sentences, so music and ambience
   survive without two voices fighting.
-- **📝 Translated subtitles** — get a matching `.srt` file alongside the dubbed video.
+- **📝 Subtitles in SRT, VTT, ASS, or TXT** — generate any combination alongside the
+  dubbed video, and optionally **burn them into the video frame** (hardcoded, for
+  platforms that don't support separate subtitle tracks).
+- **🌍 Dub into multiple languages in one run** — pick several target languages at
+  once; VoxDub transcribes the source audio only once and reuses it for every
+  language, so you get one video (and subtitle set) per language without re-running
+  Whisper each time.
+- **🎚️ Voice speed, pitch & volume control** — nudge the dubbed voice faster/slower,
+  higher/lower, or louder/quieter, independent of the automatic sync speed-up.
 - **🎚️ Adjustable accuracy** — five Whisper model sizes, from `tiny` (fast drafts) to
   `large-v3` (best transcription).
 - **🛡️ Voice fallback** — if the free TTS endpoint rejects a specific text+voice combo,
@@ -75,6 +90,58 @@ all dependencies, and a static ffmpeg build if your system doesn't have one — 
 in your browser. Later launches start in seconds. The Whisper `small` model (~460 MB) downloads
 automatically on the first translation.
 
+### Troubleshooting first-run setup
+
+The launchers print the actual error if something fails, but these are the most common causes:
+
+<details>
+<summary><b>Windows</b></summary>
+
+- **"Windows protected your PC" (SmartScreen)** — expected for an unsigned `.bat` file
+  downloaded from the internet. Click **More info** → **Run anyway**.
+- **`uv sync` fails partway through** — often a path-length problem: Windows limits paths to
+  260 characters, and this can be exceeded inside nested Python package folders. Move the
+  unzipped VoxDub folder somewhere short, e.g. `C:\VoxDub`, and re-run.
+- **"could not install uv automatically"** — a work/school PC's policy is likely blocking
+  PowerShell script downloads. Install uv manually from
+  [docs.astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/), then re-run
+  `Start VoxDub.bat`.
+- **Stuck after a previous failed attempt** — delete the `.venv` folder next to the launcher
+  and re-run; it rebuilds cleanly.
+
+</details>
+
+<details>
+<summary><b>macOS</b></summary>
+
+- **"cannot be opened because it is from an unidentified developer"** — right-click
+  `Start VoxDub.command` → **Open** (only needed the first time).
+- **`uv sync` fails with a compiler error** — install the Xcode Command Line Tools:
+  `xcode-select --install`.
+
+</details>
+
+<details>
+<summary><b>Linux</b></summary>
+
+- **"Permission denied" running the script** — `chmod +x start-voxdub.sh` first.
+- **`uv sync` fails on a package with no prebuilt wheel** — install build tools for your
+  distro, e.g. `sudo apt install build-essential` on Debian/Ubuntu.
+
+</details>
+
+<details>
+<summary><b>Any OS</b></summary>
+
+- **Dependency install or first dub fails with a network error** — VoxDub needs internet
+  the first time you run it (to install Python packages) and every time you translate (Google
+  Translate + edge-tts are free but not local); a corporate firewall/proxy blocking `pypi.org`,
+  `huggingface.co`, or Microsoft's TTS endpoint will cause this.
+- Still stuck? [Open an issue](https://github.com/devganeshg/voxdub/issues/new) with the exact
+  error text — the launchers are designed to print an actionable message, so please paste it in.
+
+</details>
+
 ## Setup (developers)
 
 ```bash
@@ -90,11 +157,14 @@ build is downloaded automatically on first use.
 ### Command line
 
 ```bash
-uv run voxdub input.mp4 --to hi --srt          # dub to Hindi + subtitles
-uv run voxdub input.mp4 --to es --keep-bg      # keep music/ambience underneath
-uv run voxdub input.mp4 --to ja --model medium # better transcription, slower
-uv run voxdub --list-voices th                 # see voices for a language
+uv run voxdub input.mp4 --to hi --srt                    # dub to Hindi + subtitles
+uv run voxdub input.mp4 --to es --keep-bg                # keep music/ambience underneath
+uv run voxdub input.mp4 --to ja --model medium            # better transcription, slower
+uv run voxdub --list-voices th                            # see voices for a language
 uv run voxdub input.mp4 --to zh-TW --voice zh-TW-YunJheNeural
+uv run voxdub input.mp4 --to hi,es,ja --subtitles srt,vtt # dub into 3 languages in one pass
+uv run voxdub input.mp4 --to hi --burn-subtitles          # hardcode subtitles into the video
+uv run voxdub input.mp4 --to hi --rate +15% --pitch -10Hz # faster, deeper voice
 ```
 
 (`videotranslate` still works as an alias.)
@@ -108,7 +178,8 @@ Output defaults to `input_<lang>.mp4` next to the input. Source language is auto
 uv run python app.py       # opens http://127.0.0.1:7860 in your browser
 ```
 
-Drag in a video, pick the target language, press Translate.
+Drag in a video, pick one or more target languages, press Dub it. Advanced options let you
+choose subtitle formats, burn them into the video, and tweak voice speed/pitch/volume.
 
 ## Releasing
 
@@ -131,5 +202,27 @@ its Google Translate code and default voice).
 - `--keep-bg` keeps the original audio under the dub, ducked while the dubbed voice
   speaks — good for videos with music. Between sentences the original (including its
   speech) comes back up.
+- `--burn-subtitles` re-encodes the video (subtitle burn-in can't be a lossless copy) and
+  needs an ffmpeg build with libass (the `subtitles` filter). If your system ffmpeg lacks
+  it, VoxDub automatically falls back to the auto-downloaded static build, which has it.
+- `--rate`/`--pitch`/`--volume` adjust the synthesized voice itself; they're independent of
+  the automatic per-segment speed-up VoxDub applies to keep segments from overlapping.
 - Translation quality is Google Translate quality; dubbing timing is synced to segment
   starts, not lip movements.
+
+## Contributing
+
+Contributions are welcome — bug fixes, new languages/voices, docs, anything. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for how to set up a dev environment and submit a PR, and
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community guidelines.
+
+- 🐛 Found a bug? [Open an issue](https://github.com/devganeshg/voxdub/issues/new/choose).
+- 💡 Have an idea? [Start a discussion](https://github.com/devganeshg/voxdub/discussions) or
+  open a feature-request issue.
+- 🔀 Ready to code? Fork the repo, make your change, and open a pull request.
+
+## License
+
+VoxDub is [MIT licensed](LICENSE) — use it, modify it, and ship it however you like.
+It depends on other open-source projects (faster-whisper, edge-tts, ffmpeg, and others) that
+carry their own licenses; see each project for details.

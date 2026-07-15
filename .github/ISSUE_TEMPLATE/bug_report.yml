@@ -1,0 +1,71 @@
+name: Bug report
+description: Something isn't working right
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! The more of this you fill in, the faster it can be fixed.
+
+  - type: input
+    id: version
+    attributes:
+      label: VoxDub version
+      description: Release version, or `git rev-parse --short HEAD` if running from source
+      placeholder: v0.2.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true
+
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Interface
+      options:
+        - Web UI (app.py / launcher)
+        - CLI (voxdub)
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you expected, and what actually happened instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Command run (or UI options selected), target language, and anything notable about the input video (length, source language, whether it has background music, etc.)
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output
+      description: Full error text from the terminal/launcher window (CLI and launchers print a `[XX%] ...` progress log and, on failure, an `error: ...` line — please paste all of it).
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and didn't find a duplicate
+          required: true
+        - label: I'm on the latest release (or a recent `main`)
+          required: true

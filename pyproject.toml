@@ -2,6 +2,10 @@
 name = "voxdub"
 version = "0.1.0"
 description = "VoxDub — dub any video into another language: local Whisper STT + free neural TTS"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Ganesh" }]
 requires-python = ">=3.11,<3.13"
 dependencies = [
     "faster-whisper>=1.0",
@@ -11,6 +15,11 @@ dependencies = [
     "gradio>=4.44",
     "static-ffmpeg>=3.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/devganeshg/voxdub"
+Repository = "https://github.com/devganeshg/voxdub"
+Issues = "https://github.com/devganeshg/voxdub/issues"
 
 [project.scripts]
 voxdub = "video_translator.cli:main"
