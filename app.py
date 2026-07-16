@@ -16,6 +16,8 @@ LANG_CHOICES = [(f"{lang.name} ({code})", code) for code, lang in LANGUAGES.item
 SOURCE_CHOICES = [("Auto-detect", "auto")] + LANG_CHOICES
 MODEL_CHOICES = ["tiny", "base", "small", "medium", "large-v3"]
 SUBTITLE_CHOICES = [(fmt.upper(), fmt) for fmt in SUBTITLE_FORMATS]
+SUBTITLE_CONTENT_CHOICES = [("Translated", "translated"), ("Original", "original"),
+                            ("Both (bilingual)", "both")]
 
 ASSETS = Path(__file__).parent / "assets"
 
@@ -89,11 +91,16 @@ def _hz(delta: float) -> str:
 
 
 def run(video, source_lang, target_langs, voice, model_size, keep_bg, subtitle_formats,
-        burn_subs, rate, pitch, volume, progress=gr.Progress()):
-    if video is None:
-        raise gr.Error("Please upload a video first.")
+        subtitle_content, burn_subs, embed_subs, subs_only, transcript_file,
+        rate, pitch, volume, progress=gr.Progress()):
+    if video is None and not (subs_only and transcript_file):
+        raise gr.Error("Please upload a video first. (Only a subtitle file is enough when "
+                       "\"Subtitles only\" is on and a transcript file is provided.)")
     if not target_langs:
         raise gr.Error("Pick at least one target language.")
+    if subs_only and (burn_subs or embed_subs):
+        raise gr.Error("Burning/embedding subtitles produces a video — turn off "
+                       "\"Subtitles only\" to use them.")
 
     def report(fraction, message):
         progress(fraction, desc=message)
@@ -105,25 +112,31 @@ def run(video, source_lang, target_langs, voice, model_size, keep_bg, subtitle_f
         model_size=model_size,
         keep_background=keep_bg,
         subtitle_formats=tuple(subtitle_formats or ()),
+        subtitle_content=subtitle_content,
         burn_subtitles=burn_subs,
+        embed_subtitles=embed_subs,
+        subtitles_only=subs_only,
+        source_subtitles=Path(transcript_file) if transcript_file else None,
         speech_rate=_pct(rate),
         speech_pitch=_hz(pitch),
         speech_volume=_pct(volume),
     )
 
+    input_path = Path(video) if video else None
     try:
         if len(target_langs) > 1:
-            results = translate_video_batch(Path(video), target_langs, opts, progress=report)
+            results = translate_video_batch(input_path, target_langs, opts, progress=report)
         else:
-            results = [translate_video(Path(video), opts, progress=report)]
-    except (ValueError, RuntimeError) as exc:
+            results = [translate_video(input_path, opts, progress=report)]
+    except (FileNotFoundError, ValueError, RuntimeError) as exc:
         raise gr.Error(str(exc))
 
     files = []
     info_lines = [f"Source language detected: **{results[0].source_lang}**"]
     transcript_parts = []
     for result in results:
-        files.append(str(result.video))
+        if result.video:
+            files.append(str(result.video))
         files += [str(p) for p in result.subtitles.values()]
         info_lines.append(
             f"- **{result.target_lang}**: {len(result.segments)} speech segments"
@@ -136,7 +149,8 @@ def run(video, source_lang, target_langs, voice, model_size, keep_bg, subtitle_f
             )
         )
 
-    return str(results[0].video), files, "\n".join(info_lines), "\n\n".join(transcript_parts)
+    first_video = str(results[0].video) if results[0].video else None
+    return first_video, files, "\n".join(info_lines), "\n\n".join(transcript_parts)
 
 
 with gr.Blocks(title="VoxDub — dub videos into any language") as demo:
@@ -161,11 +175,24 @@ with gr.Blocks(title="VoxDub — dub videos into any language") as demo:
                 )
                 keep_bg = gr.Checkbox(
                     label="Keep original audio as quiet background (music/ambience)")
+                transcript_file = gr.File(
+                    label="Transcript file (optional)", file_types=[".srt", ".vtt"],
+                    file_count="single")
+                gr.Markdown(
+                    "*Provide an SRT/VTT to dub from your own (or hand-corrected) transcript "
+                    "instead of running Whisper.*")
+                subs_only = gr.Checkbox(
+                    label="Subtitles only — skip dubbing, just produce translated subtitle files")
                 subtitle_formats = gr.CheckboxGroup(
                     SUBTITLE_CHOICES, label="Generate subtitle files",
                     info="SRT/VTT for players, ASS for styled subs, TXT for plain text")
+                subtitle_content = gr.Radio(
+                    SUBTITLE_CONTENT_CHOICES, value="translated", label="Subtitle content",
+                    info="Both = bilingual: translation on top, original underneath")
                 burn_subs = gr.Checkbox(
                     label="Burn subtitles into the video (hardcoded, re-encodes video)")
+                embed_subs = gr.Checkbox(
+                    label="Embed subtitles as a soft track (toggleable in the player, lossless)")
                 with gr.Row():
                     rate = gr.Slider(-50, 50, value=0, step=1, label="Speech speed",
                                      info="% faster/slower")
@@ -186,7 +213,8 @@ with gr.Blocks(title="VoxDub — dub videos into any language") as demo:
     btn.click(
         run,
         [video_in, source, target, voice, model, keep_bg, subtitle_formats,
-         burn_subs, rate, pitch, volume],
+         subtitle_content, burn_subs, embed_subs, subs_only, transcript_file,
+         rate, pitch, volume],
         [video_out, downloads, info, transcript],
     )
 

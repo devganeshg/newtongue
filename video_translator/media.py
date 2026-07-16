@@ -89,6 +89,26 @@ def mux(video: Path, dub_audio: Path, output: Path, keep_background: bool = Fals
     _run(cmd)
 
 
+# Subtitle codec each container can hold as a soft (selectable) track.
+_SUBTITLE_CODECS = {".mp4": "mov_text", ".m4v": "mov_text", ".mov": "mov_text",
+                    ".mkv": "srt", ".webm": "webvtt"}
+
+
+def embed_subtitles(video: Path, subtitle_path: Path, output: Path,
+                    language: str | None = None) -> None:
+    """Add subtitles as a soft (selectable, toggleable) track; nothing is re-encoded.
+
+    Unlike burn-in this is lossless and the viewer can turn the subtitles off.
+    `language` is an ISO 639-2 code shown by players as the track's language.
+    """
+    codec = _SUBTITLE_CODECS.get(Path(output).suffix.lower(), "mov_text")
+    cmd = [_ffmpeg(), "-y", "-i", str(video), "-i", str(subtitle_path),
+           "-map", "0", "-map", "1:0", "-c", "copy", "-c:s", codec]
+    if language:
+        cmd += ["-metadata:s:s:0", f"language={language}"]
+    _run(cmd + [str(output)])
+
+
 def change_tempo(audio_in: Path, audio_out: Path, tempo: float) -> None:
     """Speed up (or slow down) audio without changing pitch."""
     _run([_ffmpeg(), "-y", "-i", str(audio_in), "-filter:a", f"atempo={tempo:.4f}", str(audio_out)])
@@ -126,21 +146,36 @@ def _ffmpeg_with_subtitles_filter() -> str:
     )
 
 
-def burn_subtitles(video: Path, subtitle_path: Path, output: Path) -> None:
+def _escape_filter_value(value: str) -> str:
+    """Escape a value for use inside single quotes in an ffmpeg filtergraph."""
+    return value.replace("\\", "\\\\").replace("'", r"\'").replace(":", r"\:")
+
+
+def burn_subtitles(video: Path, subtitle_path: Path, output: Path,
+                   font: tuple[str, Path] | None = None) -> None:
     """Hard-code subtitles into the video frame (re-encodes the video stream).
+
+    `font` is a (family, file) pair naming a font that can render the target
+    script. Pointing libass at the font file's directory (fontsdir) and forcing
+    the family makes rendering work even on ffmpeg builds with no system font
+    fallback (static builds), which otherwise draw missing glyphs as boxes.
 
     ffmpeg's subtitles filter needs a path with no characters that would break
     its internal escaping; the safest fix is to run with the subtitle file's
     own directory as cwd and pass just the filename.
     """
     ffmpeg = _ffmpeg_with_subtitles_filter()
-    escaped = subtitle_path.name.replace("\\", "\\\\").replace("'", r"\'").replace(":", r"\:")
+    vf = f"subtitles=filename='{_escape_filter_value(subtitle_path.name)}'"
+    if font:
+        family, font_file = font
+        vf += (f":fontsdir='{_escape_filter_value(str(Path(font_file).parent))}'"
+               f":force_style='FontName={family}'")
     # cwd is overridden below so the subtitle filter can reference the file by bare name
     # (its path may contain ffmpeg-filtergraph-special characters); video/output must
     # therefore be absolute so they don't get resolved against that overridden cwd.
     cmd = [
         ffmpeg, "-y", "-i", str(Path(video).resolve()),
-        "-vf", f"subtitles=filename='{escaped}'",
+        "-vf", vf,
         "-c:a", "copy", str(Path(output).resolve()),
     ]
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=subtitle_path.parent)

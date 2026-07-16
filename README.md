@@ -43,7 +43,18 @@ replaced by a natural-sounding translated voice — plus optional subtitles.
   survive without two voices fighting.
 - **📝 Subtitles in SRT, VTT, ASS, or TXT** — generate any combination alongside the
   dubbed video, and optionally **burn them into the video frame** (hardcoded, for
-  platforms that don't support separate subtitle tracks).
+  platforms that don't support separate subtitle tracks) or **embed them as a soft
+  track** (toggleable in the player, lossless — the video isn't re-encoded).
+- **🈺 Bilingual subtitles** — show the translation, the original text, or both
+  (translation on top, original underneath) in every subtitle format.
+- **✍️ Edit, then dub** — feed VoxDub your own (or hand-corrected) SRT/VTT with
+  `--from-subs`: it dubs from your transcript instead of running Whisper. Generate
+  subtitles first, fix any mis-transcriptions, then dub from the fixed file.
+- **⚡ Subtitles-only mode** — `--no-dub` transcribes and translates without
+  synthesizing a voice: fast translated subtitles for any video, or even for a bare
+  subtitle file (`--no-dub --from-subs movie.srt --to es` needs no video at all).
+- **🚀 GPU acceleration** — transcription automatically uses an NVIDIA GPU when one
+  is available (`--device auto|cpu|cuda`); CPU with int8 quantization otherwise.
 - **🌍 Dub into multiple languages in one run** — pick several target languages at
   once; VoxDub transcribes the source audio only once and reuses it for every
   language, so you get one video (and subtitle set) per language without re-running
@@ -70,7 +81,7 @@ video ─ ffmpeg → audio ─ Whisper (local) → timed transcript ─ Google T
 ```
 
 Inspired by [ruslanmv/Video-Translator](https://github.com/ruslanmv/Video-Translator), upgraded with
-local Whisper transcription, natural neural voices, and time-synced dubbing.
+local Whisper transcription, natural neural voices, and time-synced dubbing. 
 
 Transcription runs fully offline. Translation and voice synthesis use free online services
 (no API keys), so an internet connection is needed while converting.
@@ -164,8 +175,16 @@ uv run voxdub --list-voices th                            # see voices for a lan
 uv run voxdub input.mp4 --to zh-TW --voice zh-TW-YunJheNeural
 uv run voxdub input.mp4 --to hi,es,ja --subtitles srt,vtt # dub into 3 languages in one pass
 uv run voxdub input.mp4 --to hi --burn-subtitles          # hardcode subtitles into the video
+uv run voxdub input.mp4 --to hi --embed-subtitles         # soft subtitle track (toggleable, lossless)
+uv run voxdub input.mp4 --to hi --srt --subtitle-content both  # bilingual subtitles
+uv run voxdub input.mp4 --to hi --no-dub --subtitles srt  # translated subtitles only, no dubbing
+uv run voxdub input.mp4 --to hi --from-subs fixed.srt     # dub from your hand-corrected transcript
+uv run voxdub --no-dub --from-subs movie.srt --to es      # translate a subtitle file (no video)
 uv run voxdub input.mp4 --to hi --rate +15% --pitch -10Hz # faster, deeper voice
 ```
+
+A tip for best quality: run once with `--no-dub --subtitles srt`, fix any transcription
+mistakes in the SRT, then dub with `--from-subs your_fixed.srt` — Whisper isn't re-run.
 
 (`videotranslate` still works as an alias.)
 
@@ -179,7 +198,9 @@ uv run python app.py       # opens http://127.0.0.1:7860 in your browser
 ```
 
 Drag in a video, pick one or more target languages, press Dub it. Advanced options let you
-choose subtitle formats, burn them into the video, and tweak voice speed/pitch/volume.
+choose subtitle formats and content (including bilingual), burn or soft-embed them into the
+video, dub from your own SRT/VTT transcript, skip dubbing entirely (subtitles only), and
+tweak voice speed/pitch/volume.
 
 ## Releasing
 
@@ -205,8 +226,24 @@ its Google Translate code and default voice).
 - `--burn-subtitles` re-encodes the video (subtitle burn-in can't be a lossless copy) and
   needs an ffmpeg build with libass (the `subtitles` filter). If your system ffmpeg lacks
   it, VoxDub automatically falls back to the auto-downloaded static build, which has it.
+- **Burned subtitles showing □□□ boxes instead of text?** That means no font with the
+  target script's glyphs was found. VoxDub automatically picks an installed font that
+  covers the target language (Nirmala UI / Leelawadee on Windows, Arial Unicode on macOS,
+  Noto Sans on Linux) and warns if none exists — installing
+  [Noto Sans](https://fonts.google.com/noto) for your target script fixes it.
+- **Embedded subtitles unreadable in your player?** Some players (notably QuickTime)
+  render `mov_text` tracks in a plain box and handle non-Latin scripts poorly. Use
+  `--burn-subtitles` instead (drawn by VoxDub itself, works everywhere), or play the
+  video+SRT pair in VLC/mpv.
 - `--rate`/`--pitch`/`--volume` adjust the synthesized voice itself; they're independent of
   the automatic per-segment speed-up VoxDub applies to keep segments from overlapping.
+- `--embed-subtitles` picks the subtitle codec from the output container: `mov_text` for
+  MP4/MOV/M4V, SRT for MKV, WebVTT for WebM. Some players (notably VLC on certain
+  platforms) hide `mov_text` tracks by default — check the subtitle menu.
+- `--device cuda` needs an NVIDIA GPU and a CUDA-enabled ctranslate2; the default
+  `auto` tries the GPU and silently falls back to CPU, so it's always safe.
+- `--from-subs` accepts SRT and VTT. Timings come from the file, so if you edit them,
+  the dub follows your edits.
 - Translation quality is Google Translate quality; dubbing timing is synced to segment
   starts, not lip movements.
 

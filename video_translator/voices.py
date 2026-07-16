@@ -10,27 +10,28 @@ class Language:
     google_code: str   # code understood by Google Translate
     whisper_code: str  # code understood by Whisper (source-language hint)
     default_voice: str # edge-tts voice
+    iso639_2: str      # 3-letter code players show on embedded subtitle tracks
 
 
 LANGUAGES: dict[str, Language] = {
     lang.code: lang
     for lang in [
-        Language("en", "English", "en", "en", "en-US-AriaNeural"),
-        Language("hi", "Hindi", "hi", "hi", "hi-IN-SwaraNeural"),
-        Language("es", "Spanish", "es", "es", "es-ES-ElviraNeural"),
-        Language("fr", "French", "fr", "fr", "fr-FR-DeniseNeural"),
-        Language("de", "German", "de", "de", "de-DE-KatjaNeural"),
-        Language("it", "Italian", "it", "it", "it-IT-ElsaNeural"),
-        Language("pt", "Portuguese", "pt", "pt", "pt-BR-FranciscaNeural"),
-        Language("ja", "Japanese", "ja", "ja", "ja-JP-NanamiNeural"),
-        Language("ko", "Korean", "ko", "ko", "ko-KR-SunHiNeural"),
-        Language("zh", "Chinese (Simplified)", "zh-CN", "zh", "zh-CN-XiaoxiaoNeural"),
-        Language("zh-TW", "Chinese (Taiwan)", "zh-TW", "zh", "zh-TW-HsiaoChenNeural"),
+        Language("en", "English", "en", "en", "en-US-AriaNeural", "eng"),
+        Language("hi", "Hindi", "hi", "hi", "hi-IN-SwaraNeural", "hin"),
+        Language("es", "Spanish", "es", "es", "es-ES-ElviraNeural", "spa"),
+        Language("fr", "French", "fr", "fr", "fr-FR-DeniseNeural", "fra"),
+        Language("de", "German", "de", "de", "de-DE-KatjaNeural", "deu"),
+        Language("it", "Italian", "it", "it", "it-IT-ElsaNeural", "ita"),
+        Language("pt", "Portuguese", "pt", "pt", "pt-BR-FranciscaNeural", "por"),
+        Language("ja", "Japanese", "ja", "ja", "ja-JP-NanamiNeural", "jpn"),
+        Language("ko", "Korean", "ko", "ko", "ko-KR-SunHiNeural", "kor"),
+        Language("zh", "Chinese (Simplified)", "zh-CN", "zh", "zh-CN-XiaoxiaoNeural", "chi"),
+        Language("zh-TW", "Chinese (Taiwan)", "zh-TW", "zh", "zh-TW-HsiaoChenNeural", "chi"),
         # Premwadee (female) currently fails on many inputs server-side; Niwat is reliable
-        Language("th", "Thai", "th", "th", "th-TH-NiwatNeural"),
-        Language("vi", "Vietnamese", "vi", "vi", "vi-VN-HoaiMyNeural"),
-        Language("ar", "Arabic (Gulf)", "ar", "ar", "ar-AE-FatimaNeural"),
-        Language("ru", "Russian", "ru", "ru", "ru-RU-SvetlanaNeural"),
+        Language("th", "Thai", "th", "th", "th-TH-NiwatNeural", "tha"),
+        Language("vi", "Vietnamese", "vi", "vi", "vi-VN-HoaiMyNeural", "vie"),
+        Language("ar", "Arabic (Gulf)", "ar", "ar", "ar-AE-FatimaNeural", "ara"),
+        Language("ru", "Russian", "ru", "ru", "ru-RU-SvetlanaNeural", "rus"),
     ]
 }
 
