@@ -8,6 +8,7 @@ from pathlib import Path
 # pydub 0.25 trips SyntaxWarning on import under Python 3.12
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pydub")
 
+from . import __version__
 from .subtitles import CONTENT_CHOICES as SUBTITLE_CONTENT_CHOICES
 from .subtitles import FORMATS as SUBTITLE_FORMATS
 from .voices import LANGUAGES
@@ -20,6 +21,7 @@ def main(argv: list[str] | None = None) -> int:
         description="VoxDub: dub a video's voice into another language.",
         epilog=f"Languages: {lang_help}",
     )
+    parser.add_argument("--version", action="version", version=f"voxdub {__version__}")
     parser.add_argument("input", nargs="?", help="input video file")
     parser.add_argument("--to", dest="target",
                         help="target language code(s), comma-separated for a batch "

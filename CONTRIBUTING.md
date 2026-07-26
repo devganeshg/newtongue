@@ -50,15 +50,36 @@ time into it. Small, focused PRs are much easier to review than large ones.
 
 ## Testing your change
 
-There's no formal test suite yet (contributions welcome here too). At minimum, before opening
-a PR:
+`tests/` covers the pure logic — subtitle timestamp formatting/parsing and the clip-placement
+math in `timeline.py`. It needs no network and no ffmpeg (tempo-shifting is stubbed), so it's
+fast:
 
 ```bash
-uv run python -m py_compile app.py video_translator/*.py   # no syntax errors
-uv run voxdub examples/sample.mp4 --to hi --model tiny      # pipeline still runs end-to-end
+uv run pytest
 ```
 
-CI (`.github/workflows/ci.yml`) runs a smoke test on Windows, macOS, and Linux on every PR.
+Please add a test alongside any change to `subtitles.py` or `timeline.py` — those are the
+places where a bug produces output that still *looks* valid.
+
+Then check the pipeline itself still runs. This needs no network (`en` → `en` skips
+translation, `--no-dub` skips TTS):
+
+```bash
+printf '1\n00:00:00,000 --> 00:00:02,000\nHello there.\n' > /tmp/in.srt
+uv run voxdub --no-dub --from-subs /tmp/in.srt --to en --from en --subtitles srt,vtt,ass,txt
+```
+
+And, if your change touches dubbing, do one real run with a video you own:
+
+```bash
+uv run voxdub your_clip.mp4 --to hi --model tiny
+```
+
+CI (`.github/workflows/ci.yml`) runs the unit tests, a smoke test, and an offline end-to-end
+run on Windows, macOS, and Linux for every PR. A fourth job, `e2e-live`, performs a real dub
+against the free Google Translate and Edge TTS endpoints; it's marked `continue-on-error`
+because those are unofficial services that can break without notice — a red `e2e-live` with
+everything else green means an upstream endpoint changed, not that your PR is broken.
 
 ## Pull requests
 

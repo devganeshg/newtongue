@@ -25,11 +25,18 @@ def translate_segments(segments: list[Segment], source: str, target: str) -> Non
             try:
                 results = translator.translate_batch(texts)
                 break
-            except Exception:
+            except Exception as exc:
                 if attempt == _RETRIES - 1:
+                    # Keep the original error visible: a rate-limit, an unsupported
+                    # language pair and a dead endpoint all land here, and "check
+                    # your internet connection" is misleading for all three.
                     raise RuntimeError(
-                        "Translation failed after retries — check your internet connection."
-                    )
+                        f"Translation failed after {_RETRIES} attempts "
+                        f"({source} → {target}). This is usually a lost internet "
+                        f"connection, or Google rate-limiting the free endpoint — "
+                        f"wait a minute and retry. Underlying error: "
+                        f"{type(exc).__name__}: {exc}"
+                    ) from exc
                 time.sleep(2 ** attempt)
         for seg, translated in zip(batch, results):
             seg.translated = (translated or "").strip()

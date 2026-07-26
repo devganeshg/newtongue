@@ -1,10 +1,10 @@
 [project]
 name = "voxdub"
-version = "0.1.0"
+version = "1.0.0"
 description = "VoxDub — dub any video into another language: local Whisper STT + free neural TTS"
 readme = "README.md"
 license = "MIT"
-license-files = ["LICENSE"]
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 authors = [{ name = "Ganesh" }]
 requires-python = ">=3.11,<3.13"
 dependencies = [
@@ -24,6 +24,12 @@ Issues = "https://github.com/devganeshg/voxdub/issues"
 [project.scripts]
 voxdub = "video_translator.cli:main"
 videotranslate = "video_translator.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [build-system]
 requires = ["hatchling"]

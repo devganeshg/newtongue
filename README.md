@@ -31,7 +31,9 @@ replaced by a natural-sounding translated voice — plus optional subtitles.
   [faster-whisper](https://github.com/SYSTRAN/faster-whisper) (CPU, int8). Your video is
   never uploaded anywhere; only the transcribed *text* goes to the translation service.
 - **🆓 No API keys, no accounts** — translation (Google Translate) and voices
-  (Microsoft Edge neural TTS) use free public endpoints.
+  (Microsoft Edge neural TTS) use free public endpoints. These are *unofficial*
+  endpoints not intended for third-party use — see
+  [Third-party services](#third-party-services-and-your-responsibilities).
 - **⏱️ Time-synced dubbing, no overlapping voices** — every translated clip starts
   exactly where the original sentence started, and clips are guaranteed never to talk
   over each other: long translations are sped up pitch-preserved (gently up to 1.35×,
@@ -258,8 +260,43 @@ Contributions are welcome — bug fixes, new languages/voices, docs, anything. S
   open a feature-request issue.
 - 🔀 Ready to code? Fork the repo, make your change, and open a pull request.
 
+## Third-party services and your responsibilities
+
+VoxDub is a client. It does not host translation or speech synthesis — it talks to services
+run by other companies. Please read this before depending on it for anything important.
+
+**The translation and TTS endpoints are unofficial.** `deep-translator`'s free
+`GoogleTranslator` backend uses the public `translate.google.com` web endpoint, and
+`edge-tts` uses the private endpoint behind Microsoft Edge's "Read Aloud" feature. Neither
+is a documented, supported API for third-party applications, and using them may not be
+consistent with Google's or Microsoft's terms of service. Both can change, rate-limit, or
+stop working at any time without notice — that is the single most likely reason VoxDub will
+break for you. For commercial or production use, use an official paid API (Google Cloud
+Translation, DeepL, Azure Speech) instead.
+
+**You are responsible for the content you process.** Only dub videos you own or have the
+rights to translate, adapt, and distribute. Dubbing produces a derivative work, and
+translating or re-voicing someone else's video without permission may infringe copyright or
+personality/voice rights depending on your jurisdiction. VoxDub's authors are not
+responsible for how you use it.
+
+**Machine translation is not accurate translation.** Do not rely on VoxDub's output for
+legal, medical, safety, or other consequential material without human review.
+
 ## License
 
-VoxDub is [MIT licensed](LICENSE) — use it, modify it, and ship it however you like.
-It depends on other open-source projects (faster-whisper, edge-tts, ffmpeg, and others) that
-carry their own licenses; see each project for details.
+VoxDub itself is [MIT licensed](LICENSE) — use it, modify it, and ship it however you like.
+
+It depends on third-party projects under their own licenses, and two are worth calling out
+because they are **not** permissive:
+
+- **[edge-tts](https://github.com/rany2/edge-tts) is LGPL-3.0.** VoxDub imports it as an
+  unmodified, separately-installed library, so VoxDub stays MIT. If you redistribute VoxDub
+  bundled with edge-tts, LGPL-3.0 §4 requires that your users be able to replace it with
+  their own modified copy — installing it normally via `uv`/`pip` satisfies this.
+- **ffmpeg builds are typically GPL-licensed.** VoxDub does not ship ffmpeg; it uses your
+  system ffmpeg, or `static-ffmpeg` downloads a build onto *your* machine at runtime, so
+  plain use carries no distribution obligation. If you package VoxDub into an installer that
+  bundles an ffmpeg binary, the GPL terms of that build apply to what you distribute.
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the full dependency list.
