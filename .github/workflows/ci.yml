@@ -92,6 +92,11 @@ jobs:
       - uses: astral-sh/setup-uv@v8.3.2
       - run: uv sync
 
+      - name: Install ffmpeg
+        # The runner has no ffmpeg, and this job needs ffprobe/volumedetect
+        # directly, not just the copy VoxDub downloads for itself.
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
       - name: Build a 4-second test video
         run: |
           set -eux
