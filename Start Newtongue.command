@@ -1,8 +1,8 @@
 #!/bin/bash
-# macOS launcher: double-click to set up (first run) and open VoxDub.
+# macOS launcher: double-click to set up (first run) and open Newtongue.
 cd "$(dirname "$0")"
 
-echo "=== VoxDub ==="
+echo "=== Newtongue ==="
 echo
 
 # 1. Ensure uv (Python package manager) is installed
@@ -44,7 +44,7 @@ fi
 echo "Starting... the app will open in your browser. Keep this window open."
 if ! uv run python app.py; then
     echo
-    echo "VoxDub exited with an error (see above). If it mentions ffmpeg, make sure"
+    echo "Newtongue exited with an error (see above). If it mentions ffmpeg, make sure"
     echo "you have an internet connection so it can download ffmpeg automatically"
     echo "on first use, or install it yourself: brew install ffmpeg"
 fi

@@ -6,7 +6,7 @@ body:
     id: problem
     attributes:
       label: What problem would this solve?
-      description: What are you trying to do that VoxDub doesn't support today?
+      description: What are you trying to do that Newtongue doesn't support today?
     validations:
       required: true
 

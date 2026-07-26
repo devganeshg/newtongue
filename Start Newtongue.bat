@@ -1,10 +1,10 @@
 @echo off
-rem Windows launcher: double-click to set up (first run) and open VoxDub.
+rem Windows launcher: double-click to set up (first run) and open Newtongue.
 setlocal EnableExtensions
 cd /d "%~dp0"
 chcp 65001 >nul 2>nul
 
-echo === VoxDub ===
+echo === Newtongue ===
 echo.
 
 rem 0. Warn early about long install paths: Windows' 260-char path limit can
@@ -13,7 +13,7 @@ set "HEREPATH=%cd%"
 if not "%HEREPATH:~230,1%"=="" (
     echo WARNING: this folder's path is long ^(%HEREPATH%^).
     echo Windows has a 260-character path limit that can make setup fail below.
-    echo If it does, move this folder somewhere short like C:\VoxDub and retry.
+    echo If it does, move this folder somewhere short like C:\Newtongue and retry.
     echo.
 )
 
@@ -65,7 +65,7 @@ echo Starting... the app will open in your browser. Keep this window open.
 uv run python app.py
 if errorlevel 1 (
     echo.
-    echo VoxDub exited with an error ^(see above^). If it mentions ffmpeg,
+    echo Newtongue exited with an error ^(see above^). If it mentions ffmpeg,
     echo make sure you have an internet connection so it can download ffmpeg
     echo automatically on first use.
 )

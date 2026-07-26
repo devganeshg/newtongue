@@ -35,16 +35,16 @@ jobs:
         run: uv sync
 
       - name: Import check
-        run: uv run python -c "import video_translator.pipeline, app"
+        run: uv run python -c "import newtongue.pipeline, app"
 
       - name: CLI runs
-        run: uv run voxdub --help
+        run: uv run newtongue --help
 
       - name: Version flag works
-        run: uv run voxdub --version
+        run: uv run newtongue --version
 
       - name: ffmpeg auto-download works
-        run: uv run python -c "from video_translator.media import ensure_ffmpeg, _ffmpeg; ensure_ffmpeg(); print(_ffmpeg())"
+        run: uv run python -c "from newtongue.media import ensure_ffmpeg, _ffmpeg; ensure_ffmpeg(); print(_ffmpeg())"
 
   e2e-offline:
     # Exercises the real pipeline end to end without touching any network
@@ -60,7 +60,7 @@ jobs:
         run: printf '1\n00:00:00,000 --> 00:00:02,000\nHello there.\n\n2\n00:00:02,000 --> 00:00:04,000\nThis is a test.\n' > in.srt
 
       - name: Generate every subtitle format from it
-        run: uv run voxdub --no-dub --from-subs in.srt --to en --from en --subtitles srt,vtt,ass,txt
+        run: uv run newtongue --no-dub --from-subs in.srt --to en --from en --subtitles srt,vtt,ass,txt
 
       - name: Check the outputs are real
         run: |
@@ -76,7 +76,7 @@ jobs:
       - name: Bilingual subtitles
         run: |
           set -eux
-          uv run voxdub --no-dub --from-subs in.srt --to en --from en \
+          uv run newtongue --no-dub --from-subs in.srt --to en --from en \
             --subtitles srt --subtitle-content both
           test -s in_en.srt
 
@@ -94,7 +94,7 @@ jobs:
 
       - name: Install ffmpeg
         # The runner has no ffmpeg, and this job needs ffprobe/volumedetect
-        # directly, not just the copy VoxDub downloads for itself.
+        # directly, not just the copy Newtongue downloads for itself.
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
       - name: Build a 4-second test video
@@ -106,7 +106,7 @@ jobs:
           printf '1\n00:00:00,000 --> 00:00:02,000\nHello there.\n\n2\n00:00:02,000 --> 00:00:04,000\nThis is a test.\n' > in.srt
 
       - name: Dub into Hindi (hits Google Translate + Edge TTS)
-        run: uv run voxdub clip.mp4 --to hi --from en --from-subs in.srt --srt
+        run: uv run newtongue clip.mp4 --to hi --from en --from-subs in.srt --srt
 
       - name: Check the dub produced real audio
         run: |

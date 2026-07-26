@@ -845,6 +845,37 @@ wheels = [
 ]
 
 [[package]]
+name = "newtongue"
+version = "1.0.0"
+source = { editable = "." }
+dependencies = [
+    { name = "deep-translator" },
+    { name = "edge-tts" },
+    { name = "faster-whisper" },
+    { name = "gradio" },
+    { name = "pydub" },
+    { name = "static-ffmpeg" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "deep-translator", specifier = ">=1.11" },
+    { name = "edge-tts", specifier = ">=6.1" },
+    { name = "faster-whisper", specifier = ">=1.0" },
+    { name = "gradio", specifier = ">=4.44" },
+    { name = "pydub", specifier = ">=0.25" },
+    { name = "static-ffmpeg", specifier = ">=3.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8.0" }]
+
+[[package]]
 name = "nh3"
 version = "0.3.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1626,37 +1657,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/a2/65/b7c6c443ccc58678c
 wheels = [
     { url = "https://files.pythonhosted.org/packages/45/ec/dbb7e5a6b91f86bfb9eb7d2988a2730907b6a729875b949c7f022e8b88fa/uvicorn-0.51.0-py3-none-any.whl", hash = "sha256:5d38af6cd620f2ae3849fb44fd4879e0890aa1febe8d47eb355fb45d93fe6a5b", size = 73219, upload-time = "2026-07-08T10:59:04.44Z" },
 ]
-
-[[package]]
-name = "voxdub"
-version = "1.0.0"
-source = { editable = "." }
-dependencies = [
-    { name = "deep-translator" },
-    { name = "edge-tts" },
-    { name = "faster-whisper" },
-    { name = "gradio" },
-    { name = "pydub" },
-    { name = "static-ffmpeg" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "deep-translator", specifier = ">=1.11" },
-    { name = "edge-tts", specifier = ">=6.1" },
-    { name = "faster-whisper", specifier = ">=1.0" },
-    { name = "gradio", specifier = ">=4.44" },
-    { name = "pydub", specifier = ">=0.25" },
-    { name = "static-ffmpeg", specifier = ">=3.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.0" }]
 
 [[package]]
 name = "yarl"

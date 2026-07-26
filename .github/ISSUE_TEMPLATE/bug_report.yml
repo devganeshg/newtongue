@@ -10,7 +10,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: VoxDub version
+      label: Newtongue version
       description: Release version, or `git rev-parse --short HEAD` if running from source
       placeholder: v0.2.0
     validations:
@@ -33,7 +33,7 @@ body:
       label: Interface
       options:
         - Web UI (app.py / launcher)
-        - CLI (voxdub)
+        - CLI (newtongue)
     validations:
       required: true
 

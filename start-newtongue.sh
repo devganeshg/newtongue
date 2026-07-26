@@ -1,9 +1,9 @@
 #!/bin/bash
-# Linux launcher: run to set up (first run) and open VoxDub.
-#   chmod +x start-voxdub.sh && ./start-voxdub.sh
+# Linux launcher: run to set up (first run) and open Newtongue.
+#   chmod +x start-newtongue.sh && ./start-newtongue.sh
 cd "$(dirname "$0")"
 
-echo "=== VoxDub ==="
+echo "=== Newtongue ==="
 echo
 
 # 1. Ensure uv (Python package manager) is installed
@@ -44,7 +44,7 @@ fi
 echo "Starting... the app will open in your browser. Keep this terminal open."
 if ! uv run python app.py; then
     echo
-    echo "VoxDub exited with an error (see above). If it mentions ffmpeg, make sure"
+    echo "Newtongue exited with an error (see above). If it mentions ffmpeg, make sure"
     echo "you have an internet connection so it can download ffmpeg automatically"
     echo "on first use, or install it yourself: sudo apt install ffmpeg"
     exit 1

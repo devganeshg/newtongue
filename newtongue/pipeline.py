@@ -180,7 +180,7 @@ def translate_video(input_path: Path | None, opts: Options,
         if progress:
             progress(fraction, message)
 
-    with tempfile.TemporaryDirectory(prefix="videotranslate_") as tmp:
+    with tempfile.TemporaryDirectory(prefix="newtongue_") as tmp:
         work = Path(tmp)
 
         segments, detected_lang = _load_transcript(input_path, opts, work, report, 0.08, 0.3)
@@ -216,7 +216,7 @@ def translate_video_batch(input_path: Path | None, target_langs: list[str], opts
             progress(fraction, message)
 
     results: list[Result] = []
-    with tempfile.TemporaryDirectory(prefix="videotranslate_") as tmp:
+    with tempfile.TemporaryDirectory(prefix="newtongue_") as tmp:
         work = Path(tmp)
 
         base_segments, detected_lang = _load_transcript(input_path, opts, work, report, 0.05, 0.15)

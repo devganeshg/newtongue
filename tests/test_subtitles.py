@@ -6,8 +6,8 @@ still *looks* valid, so they're worth pinning down exactly.
 
 import pytest
 
-from video_translator.stt import Segment
-from video_translator.subtitles import (
+from newtongue.stt import Segment
+from newtongue.subtitles import (
     _cue_text,
     _parse_timestamp,
     _timestamp_ass,

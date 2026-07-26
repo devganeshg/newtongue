@@ -1,7 +1,7 @@
 [project]
-name = "voxdub"
+name = "newtongue"
 version = "1.0.0"
-description = "VoxDub — dub any video into another language: local Whisper STT + free neural TTS"
+description = "Newtongue — dub any video into another language: local Whisper STT + free neural TTS"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
@@ -17,13 +17,13 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/devganeshg/voxdub"
-Repository = "https://github.com/devganeshg/voxdub"
-Issues = "https://github.com/devganeshg/voxdub/issues"
+Homepage = "https://github.com/devganeshg/newtongue"
+Repository = "https://github.com/devganeshg/newtongue"
+Issues = "https://github.com/devganeshg/newtongue/issues"
 
 [project.scripts]
-voxdub = "video_translator.cli:main"
-videotranslate = "video_translator.cli:main"
+newtongue = "newtongue.cli:main"
+nt = "newtongue.cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8.0"]
@@ -36,4 +36,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["video_translator"]
+packages = ["newtongue"]

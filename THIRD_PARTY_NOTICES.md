@@ -1,7 +1,7 @@
 # Third-party notices
 
-VoxDub is distributed under the [MIT License](LICENSE). It depends on the projects below,
-each under its own license. Nothing here is legal advice; if you redistribute VoxDub, verify
+Newtongue is distributed under the [MIT License](LICENSE). It depends on the projects below,
+each under its own license. Nothing here is legal advice; if you redistribute Newtongue, verify
 the terms of everything you bundle with it.
 
 ## Direct dependencies
@@ -23,27 +23,27 @@ The full resolved dependency tree, with pinned versions, is in `uv.lock`.
 
 ### edge-tts — LGPL-3.0
 
-VoxDub calls edge-tts through its public Python API as an unmodified library installed
-separately by `uv`/`pip`. Under LGPL-3.0 this makes VoxDub a "work that uses the Library",
-so VoxDub remains MIT-licensed.
+Newtongue calls edge-tts through its public Python API as an unmodified library installed
+separately by `uv`/`pip`. Under LGPL-3.0 this makes Newtongue a "work that uses the Library",
+so Newtongue remains MIT-licensed.
 
-If you redistribute VoxDub together with a copy of edge-tts, LGPL-3.0 §4 applies to your
+If you redistribute Newtongue together with a copy of edge-tts, LGPL-3.0 §4 applies to your
 distribution: recipients must be able to replace edge-tts with a modified version and have
-VoxDub still work. A normal Python install (edge-tts in `site-packages`, importable and
+Newtongue still work. A normal Python install (edge-tts in `site-packages`, importable and
 replaceable) satisfies this. A frozen single-file binary with edge-tts statically embedded
 generally does not, without extra steps.
 
-VoxDub does not modify edge-tts. Its source is at https://github.com/rany2/edge-tts.
+Newtongue does not modify edge-tts. Its source is at https://github.com/rany2/edge-tts.
 
 ### ffmpeg — GPL (typically) or LGPL
 
-VoxDub does not ship ffmpeg. It invokes whatever `ffmpeg` is on your `PATH`, and falls back
+Newtongue does not ship ffmpeg. It invokes whatever `ffmpeg` is on your `PATH`, and falls back
 to `static-ffmpeg`, which downloads a prebuilt binary to your machine at runtime. Because
-the download happens on the end user's machine and VoxDub communicates with ffmpeg only as a
-separate process via the command line, ordinary use of VoxDub creates no ffmpeg distribution
+the download happens on the end user's machine and Newtongue communicates with ffmpeg only as a
+separate process via the command line, ordinary use of Newtongue creates no ffmpeg distribution
 obligation for you.
 
-Most prebuilt static ffmpeg builds — including those with `libass`, which VoxDub's
+Most prebuilt static ffmpeg builds — including those with `libass`, which Newtongue's
 `--burn-subtitles` requires — are compiled with GPL-licensed components and are therefore
 GPL-licensed as a whole. **If you build an installer or bundle that includes an ffmpeg
 binary, you are distributing ffmpeg, and that build's license (usually GPL-2.0-or-later or
@@ -67,13 +67,13 @@ use, switch to an official API (Google Cloud Translation, DeepL, Azure Speech).
 
 ## Fonts
 
-VoxDub bundles no fonts. For burned-in subtitles it locates a font already installed on your
-system that covers the target script (see `video_translator/fonts.py`) and points libass at
+Newtongue bundles no fonts. For burned-in subtitles it locates a font already installed on your
+system that covers the target script (see `newtongue/fonts.py`) and points libass at
 that file. Those fonts are licensed by their vendors — Microsoft, Apple, or your Linux
-distribution's Noto packages (SIL Open Font License 1.1) — and VoxDub neither copies nor
+distribution's Noto packages (SIL Open Font License 1.1) — and Newtongue neither copies nor
 redistributes them.
 
 ## Sample media
 
 Any sample videos under `examples/` are local development fixtures and are excluded from
-version control via `.gitignore`. No third-party media is distributed with VoxDub.
+version control via `.gitignore`. No third-party media is distributed with Newtongue.

@@ -1,4 +1,4 @@
-"""VoxDub — Gradio web UI for the video voice translator. Run: uv run python app.py"""
+"""Newtongue — Gradio web UI for the video voice translator. Run: uv run python app.py"""
 
 import warnings
 from pathlib import Path
@@ -8,9 +8,9 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pydub")
 
 import gradio as gr
 
-from video_translator.pipeline import Options, translate_video, translate_video_batch
-from video_translator.subtitles import FORMATS as SUBTITLE_FORMATS
-from video_translator.voices import LANGUAGES
+from newtongue.pipeline import Options, translate_video, translate_video_batch
+from newtongue.subtitles import FORMATS as SUBTITLE_FORMATS
+from newtongue.voices import LANGUAGES
 
 LANG_CHOICES = [(f"{lang.name} ({code})", code) for code, lang in LANGUAGES.items()]
 SOURCE_CHOICES = [("Auto-detect", "auto")] + LANG_CHOICES
@@ -41,7 +41,7 @@ HEADER_HTML = f"""
 <div id="vox-header">
   {LOGO_SVG}
   <div>
-    <div class="vox-name">VoxDub</div>
+    <div class="vox-name">Newtongue</div>
     <div class="vox-tag">Dub any video into another language — natural neural voices, no API keys.</div>
   </div>
 </div>
@@ -153,7 +153,7 @@ def run(video, source_lang, target_langs, voice, model_size, keep_bg, subtitle_f
     return first_video, files, "\n".join(info_lines), "\n\n".join(transcript_parts)
 
 
-with gr.Blocks(title="VoxDub — dub videos into any language") as demo:
+with gr.Blocks(title="Newtongue — dub videos into any language") as demo:
     gr.HTML(HEADER_HTML)
     with gr.Row():
         with gr.Column():

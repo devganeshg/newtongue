@@ -23,7 +23,7 @@ SCRIPTS = {
 
 def _macos_candidates(lang: str) -> list[tuple[str, str]]:
     supp = "/System/Library/Fonts/Supplemental"
-    # Arial Unicode MS ships with macOS and covers every script VoxDub dubs into.
+    # Arial Unicode MS ships with macOS and covers every script Newtongue dubs into.
     universal = [("Arial Unicode MS", f"{supp}/Arial Unicode.ttf")]
     preferred = {
         "hi": [("Devanagari Sangam MN", f"{supp}/Devanagari Sangam MN.ttc")],

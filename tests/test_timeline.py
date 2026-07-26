@@ -9,8 +9,8 @@ voices talking over each other. These tests stub out `media.change_tempo`
 import pytest
 from pydub import AudioSegment
 
-from video_translator import timeline
-from video_translator.stt import Segment
+from newtongue import timeline
+from newtongue.stt import Segment
 
 FRAME_RATE = 24000
 

@@ -124,7 +124,7 @@ def _ffmpeg_with_subtitles_filter() -> str:
     """Resolve an ffmpeg binary that has the 'subtitles' filter (needs libass).
 
     Many distro/Homebrew ffmpeg builds omit libass. If the one already on PATH
-    lacks it, fall back to the static-ffmpeg build VoxDub can auto-download,
+    lacks it, fall back to the static-ffmpeg build Newtongue can auto-download,
     which is built with libass.
     """
     ffmpeg = _ffmpeg()

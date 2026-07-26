@@ -1,32 +1,32 @@
-# Contributing to VoxDub
+# Contributing to Newtongue
 
-Thanks for considering a contribution! VoxDub is a small, focused tool — most contributions
+Thanks for considering a contribution! Newtongue is a small, focused tool — most contributions
 fall into a few clear categories below.
 
 ## Dev setup
 
 ```bash
-git clone https://github.com/devganeshg/voxdub.git
-cd voxdub
+git clone https://github.com/devganeshg/newtongue.git
+cd newtongue
 uv sync                    # creates .venv with Python 3.11/3.12 and installs deps
 uv run python app.py       # web UI
-uv run voxdub --help       # CLI
+uv run newtongue --help       # CLI
 ```
 
-ffmpeg is picked up from PATH if installed, otherwise VoxDub downloads a static build
+ffmpeg is picked up from PATH if installed, otherwise Newtongue downloads a static build
 automatically the first time it's needed.
 
 ## Ways to contribute
 
 ### Add a language or voice
 
-Languages live in `video_translator/voices.py` as a flat list of `Language` entries (code,
+Languages live in `newtongue/voices.py` as a flat list of `Language` entries (code,
 name, Google Translate code, Whisper code, default edge-tts voice). To add one:
 
 1. Add a `Language(...)` line.
-2. Find a good default voice: `uv run voxdub --list-voices <prefix>` lists every edge-tts
+2. Find a good default voice: `uv run newtongue --list-voices <prefix>` lists every edge-tts
    voice for that locale.
-3. Sanity-check it end-to-end: `uv run voxdub examples/sample.mp4 --to <code>` and listen to
+3. Sanity-check it end-to-end: `uv run newtongue examples/sample.mp4 --to <code>` and listen to
    the result.
 
 ### Fix a bug
@@ -66,13 +66,13 @@ translation, `--no-dub` skips TTS):
 
 ```bash
 printf '1\n00:00:00,000 --> 00:00:02,000\nHello there.\n' > /tmp/in.srt
-uv run voxdub --no-dub --from-subs /tmp/in.srt --to en --from en --subtitles srt,vtt,ass,txt
+uv run newtongue --no-dub --from-subs /tmp/in.srt --to en --from en --subtitles srt,vtt,ass,txt
 ```
 
 And, if your change touches dubbing, do one real run with a video you own:
 
 ```bash
-uv run voxdub your_clip.mp4 --to hi --model tiny
+uv run newtongue your_clip.mp4 --to hi --model tiny
 ```
 
 CI (`.github/workflows/ci.yml`) runs the unit tests, a smoke test, and an offline end-to-end

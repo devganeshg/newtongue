@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 96">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96">
   <defs>
-    <linearGradient id="vox-g" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="nt-g" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#8B5CF6"/>
       <stop offset="100%" stop-color="#06B6D4"/>
     </linearGradient>
-    <linearGradient id="vox-t" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="nt-t" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#8B5CF6"/>
       <stop offset="100%" stop-color="#06B6D4"/>
     </linearGradient>
   </defs>
   <!-- icon -->
   <g transform="translate(0 8) scale(0.625)">
-    <rect width="128" height="128" rx="28" fill="url(#vox-g)"/>
+    <rect width="128" height="128" rx="28" fill="url(#nt-g)"/>
     <path d="M38 42.5v43c0 3.9 4.3 6.3 7.6 4.2l34-21.5c3.1-2 3.1-6.5 0-8.4l-34-21.5c-3.3-2.1-7.6.3-7.6 4.2z" fill="#fff"/>
     <g fill="#fff">
       <rect x="88" y="54" width="8" height="20" rx="4" opacity="0.85"/>
@@ -20,6 +20,6 @@
     </g>
   </g>
   <!-- wordmark -->
-  <text x="98" y="66" font-family="Avenir Next, Segoe UI, Helvetica Neue, Arial, sans-serif"
-        font-size="46" font-weight="800" letter-spacing="-1" fill="url(#vox-t)">VoxDub</text>
+  <text x="98" y="65" font-family="Avenir Next, Segoe UI, Helvetica Neue, Arial, sans-serif"
+        font-size="42" font-weight="800" letter-spacing="-1" fill="url(#nt-t)">Newtongue</text>
 </svg>
