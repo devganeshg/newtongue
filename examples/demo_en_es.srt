@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:03,600
+New Tongue dobla tus videos a otro idioma.
+New Tongue dubs your videos into another language.
+
+2
+00:00:03,600 --> 00:00:08,000
+El reconocimiento de voz se ejecuta localmente en su propia máquina con Whisper.
+Speech recognition runs locally on your own machine with Whisper.
+
+3
+00:00:08,000 --> 00:00:13,200
+La voz traducida se sincroniza con el tiempo original, por lo que nada se superpone.
+The translated voice is synced to the original timing, so nothing overlaps.
+
+4
+00:00:13,200 --> 00:00:16,600
+Sin claves API ni cuentas.
+No API keys, and no accounts.

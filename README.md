@@ -17,6 +17,35 @@ Windows · macOS · Linux</p>
 Give Newtongue a video and a target language; it returns the same video with the speech
 replaced by a natural-sounding translated voice — plus optional subtitles.
 
+**[🌐 Website &amp; live demo](https://devganeshg.github.io/newtongue/)** — hear the same clip in
+English, Hindi and Spanish.
+
+<p align="center">
+  <img src="assets/screenshots/web-ui-result.png" width="820"
+       alt="Newtongue web UI after dubbing a clip into Hindi, showing the downloads, the detected source language, and every line with its translation">
+</p>
+
+## 🎬 Demo
+
+`examples/` holds a clip Newtongue dubbed for itself. The source is a title card with an
+English narration, both generated for this project — so the demo carries no third-party
+rights and you can reuse it freely.
+
+| | |
+|---|---|
+| [`demo_en.mp4`](examples/demo_en.mp4) | Source — English narration |
+| [`demo_en_hi.mp4`](examples/demo_en_hi.mp4) | Dubbed into Hindi |
+| [`demo_en_es.mp4`](examples/demo_en_es.mp4) | Dubbed into Spanish |
+
+All three came from one command:
+
+```bash
+newtongue examples/demo_en.mp4 --to hi,es --subtitles srt,vtt --subtitle-content both
+```
+
+The video stream in all three files is byte-identical — Newtongue copies it untouched and
+replaces only the audio, so dubbing costs no quality.
+
 ## ✨ Features
 
 - **🎬 One-click dubbing** — upload a video, pick a language, press *Dub it*. Newtongue

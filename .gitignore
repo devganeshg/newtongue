@@ -2,4 +2,16 @@
 __pycache__/
 *.pyc
 .DS_Store
-examples/
+_preview.html
+
+# Local scratch media stays out of the repo. Only the demo clips Newtongue
+# generated for itself -- from a synthetic narration we own -- are tracked.
+examples/*
+!examples/README.md
+!examples/demo_en.mp4
+!examples/demo_en_hi.mp4
+!examples/demo_en_es.mp4
+!examples/demo_en_hi.srt
+!examples/demo_en_es.srt
+!examples/demo_en_hi.vtt
+!examples/demo_en_es.vtt

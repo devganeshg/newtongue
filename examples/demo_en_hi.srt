@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:03,600
+न्यू टंग आपके वीडियो को दूसरी भाषा में डब करता है।
+New Tongue dubs your videos into another language.
+
+2
+00:00:03,600 --> 00:00:08,000
+वाक् पहचान व्हिस्पर के साथ आपकी अपनी मशीन पर स्थानीय रूप से चलती है।
+Speech recognition runs locally on your own machine with Whisper.
+
+3
+00:00:08,000 --> 00:00:13,200
+अनुवादित आवाज मूल समय के साथ समन्वयित है, इसलिए कुछ भी ओवरलैप नहीं होता है।
+The translated voice is synced to the original timing, so nothing overlaps.
+
+4
+00:00:13,200 --> 00:00:16,600
+कोई एपीआई कुंजी नहीं, और कोई खाता नहीं।
+No API keys, and no accounts.

@@ -4,6 +4,10 @@
       <stop offset="0%" stop-color="#8B5CF6"/>
       <stop offset="100%" stop-color="#06B6D4"/>
     </linearGradient>
+    <linearGradient id="nt-bars" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#0891B2"/>
+    </linearGradient>
     <linearGradient id="nt-t" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#8B5CF6"/>
       <stop offset="100%" stop-color="#06B6D4"/>
@@ -12,11 +16,16 @@
   <!-- icon -->
   <g transform="translate(0 8) scale(0.625)">
     <rect width="128" height="128" rx="28" fill="url(#nt-g)"/>
-    <path d="M38 42.5v43c0 3.9 4.3 6.3 7.6 4.2l34-21.5c3.1-2 3.1-6.5 0-8.4l-34-21.5c-3.3-2.1-7.6.3-7.6 4.2z" fill="#fff"/>
-    <g fill="#fff">
-      <rect x="88" y="54" width="8" height="20" rx="4" opacity="0.85"/>
-      <rect x="100" y="44" width="8" height="40" rx="4" opacity="0.95"/>
-      <rect x="112" y="51" width="8" height="26" rx="4" opacity="0.7"/>
+    <path d="M40 24h56a14 14 0 0 1 14 14v26a14 14 0 0 1-14 14H40a14 14 0 0 1-14-14V38a14 14 0 0 1 14-14z"
+          fill="#fff" opacity="0.28"/>
+    <path d="M32 42h56a15 15 0 0 1 15 15v26a15 15 0 0 1-15 15H62l-17 14a2.5 2.5 0 0 1-4.1-1.9V98h-8.9a15 15 0 0 1-15-15V57a15 15 0 0 1 15-15z"
+          fill="#fff"/>
+    <g fill="url(#nt-bars)">
+      <rect x="34" y="63" width="7" height="14" rx="3.5" opacity="0.55"/>
+      <rect x="46" y="56" width="7" height="28" rx="3.5" opacity="0.8"/>
+      <rect x="58" y="50" width="7" height="40" rx="3.5"/>
+      <rect x="70" y="58" width="7" height="24" rx="3.5" opacity="0.8"/>
+      <rect x="82" y="65" width="7" height="10" rx="3.5" opacity="0.55"/>
     </g>
   </g>
   <!-- wordmark -->

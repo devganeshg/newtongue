@@ -867,7 +867,7 @@ requires-dist = [
     { name = "deep-translator", specifier = ">=1.11" },
     { name = "edge-tts", specifier = ">=6.1" },
     { name = "faster-whisper", specifier = ">=1.0" },
-    { name = "gradio", specifier = ">=4.44" },
+    { name = "gradio", specifier = ">=6.0,<7" },
     { name = "pydub", specifier = ">=0.25" },
     { name = "static-ffmpeg", specifier = ">=3.0" },
 ]

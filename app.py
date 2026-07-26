@@ -24,50 +24,56 @@ ASSETS = Path(__file__).parent / "assets"
 LOGO_SVG = """\
 <svg viewBox="0 0 128 128" width="52" height="52" aria-hidden="true">
   <defs>
-    <linearGradient id="vox-g" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="nt-g" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#06B6D4"/>
     </linearGradient>
+    <linearGradient id="nt-bars" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#0891B2"/>
+    </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="28" fill="url(#vox-g)"/>
-  <path d="M38 42.5v43c0 3.9 4.3 6.3 7.6 4.2l34-21.5c3.1-2 3.1-6.5 0-8.4l-34-21.5c-3.3-2.1-7.6.3-7.6 4.2z" fill="#fff"/>
-  <g fill="#fff">
-    <rect x="88" y="54" width="8" height="20" rx="4" opacity="0.85"/>
-    <rect x="100" y="44" width="8" height="40" rx="4" opacity="0.95"/>
-    <rect x="112" y="51" width="8" height="26" rx="4" opacity="0.7"/>
+  <rect width="128" height="128" rx="28" fill="url(#nt-g)"/>
+  <path d="M40 24h56a14 14 0 0 1 14 14v26a14 14 0 0 1-14 14H40a14 14 0 0 1-14-14V38a14 14 0 0 1 14-14z" fill="#fff" opacity="0.28"/>
+  <path d="M32 42h56a15 15 0 0 1 15 15v26a15 15 0 0 1-15 15H62l-17 14a2.5 2.5 0 0 1-4.1-1.9V98h-8.9a15 15 0 0 1-15-15V57a15 15 0 0 1 15-15z" fill="#fff"/>
+  <g fill="url(#nt-bars)">
+    <rect x="34" y="63" width="7" height="14" rx="3.5" opacity="0.55"/>
+    <rect x="46" y="56" width="7" height="28" rx="3.5" opacity="0.8"/>
+    <rect x="58" y="50" width="7" height="40" rx="3.5"/>
+    <rect x="70" y="58" width="7" height="24" rx="3.5" opacity="0.8"/>
+    <rect x="82" y="65" width="7" height="10" rx="3.5" opacity="0.55"/>
   </g>
 </svg>"""
 
 HEADER_HTML = f"""
-<div id="vox-header">
+<div id="nt-header">
   {LOGO_SVG}
   <div>
-    <div class="vox-name">Newtongue</div>
-    <div class="vox-tag">Dub any video into another language — natural neural voices, no API keys.</div>
+    <div class="nt-name">Newtongue</div>
+    <div class="nt-tag">Dub any video into another language — natural neural voices, no API keys.</div>
   </div>
 </div>
 """
 
 FOOTER_HTML = """
-<div id="vox-footer">
+<div id="nt-footer">
   🎙️ Transcription runs locally (Whisper) &nbsp;·&nbsp; 🌐 Translation &amp; voices use free online services
   &nbsp;·&nbsp; 🔑 No accounts, no API keys
 </div>
 """
 
 CSS = """
-#vox-header { display: flex; align-items: center; gap: 16px; padding: 6px 0 2px; }
-#vox-header .vox-name {
+#nt-header { display: flex; align-items: center; gap: 16px; padding: 6px 0 2px; }
+#nt-header .nt-name {
   font-size: 2.1rem; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15;
   background: linear-gradient(90deg, #8B5CF6, #06B6D4);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-#vox-header .vox-tag { color: var(--body-text-color-subdued, #64748b); font-size: 0.95rem; }
-#vox-translate {
+#nt-header .nt-tag { color: var(--body-text-color-subdued, #64748b); font-size: 0.95rem; }
+#nt-translate {
   background: linear-gradient(90deg, #7C3AED, #0891B2); color: #fff; border: none;
   font-weight: 700; letter-spacing: 0.2px;
 }
-#vox-translate:hover { filter: brightness(1.12); }
-#vox-footer {
+#nt-translate:hover { filter: brightness(1.12); }
+#nt-footer {
   text-align: center; color: var(--body-text-color-subdued, #64748b);
   font-size: 0.85rem; padding-top: 10px;
 }
@@ -201,7 +207,7 @@ with gr.Blocks(title="Newtongue — dub videos into any language") as demo:
                     volume = gr.Slider(-50, 50, value=0, step=1, label="Speech volume",
                                        info="% louder/quieter")
             btn = gr.Button("3 · Dub it ✨", variant="primary", size="lg",
-                            elem_id="vox-translate")
+                            elem_id="nt-translate")
         with gr.Column():
             video_out = gr.Video(label="Dubbed video (first language)")
             downloads = gr.File(label="Downloads (all videos & subtitles)", file_count="multiple")

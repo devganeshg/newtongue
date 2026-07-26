@@ -12,7 +12,9 @@ dependencies = [
     "deep-translator>=1.11",
     "edge-tts>=6.1",
     "pydub>=0.25",
-    "gradio>=4.44",
+    # 6.0 moved theme/css from the Blocks constructor to launch(), which is
+    # where app.py passes them; on 4.x/5.x they would be silently ignored.
+    "gradio>=6.0,<7",
     "static-ffmpeg>=3.0",
 ]
 
